@@ -10,7 +10,7 @@ from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
 
 
 # lets look at some samples
-def show_samples():
+def show_samples(train_dataset, valid_dataset, test_dataset):
     sample = train_dataset[0]
     plt.subplot(1,2,1)
     plt.imshow(sample["image"].transpose(1, 2, 0)) # for visualization we have to transpose back to HWC
@@ -56,3 +56,8 @@ def main():
     train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=n_cpu)
     valid_dataloader = DataLoader(valid_dataset, batch_size=16, shuffle=False, num_workers=n_cpu)
     test_dataloader = DataLoader(test_dataset, batch_size=16, shuffle=False, num_workers=n_cpu)
+
+
+# call main
+if "__main__" == __name__:
+    main()
