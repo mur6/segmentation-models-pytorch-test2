@@ -1,49 +1,10 @@
-import os
 import torch
 import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 import segmentation_models_pytorch as smp
 
-from pprint import pprint
 from torch.utils.data import DataLoader
 from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
-import os
-
-
-# lets look at some samples
-def show_samples(train_dataset, valid_dataset, test_dataset):
-    sample = train_dataset[0]
-    plt.subplot(1, 2, 1)
-    plt.imshow(
-        sample["image"].transpose(1, 2, 0)
-    )  # for visualization we have to transpose back to HWC
-    plt.subplot(1, 2, 2)
-    plt.imshow(
-        sample["mask"].squeeze()
-    )  # for visualization we have to remove 3rd dimension of mask
-    plt.show()
-
-    sample = valid_dataset[0]
-    plt.subplot(1, 2, 1)
-    plt.imshow(
-        sample["image"].transpose(1, 2, 0)
-    )  # for visualization we have to transpose back to HWC
-    plt.subplot(1, 2, 2)
-    plt.imshow(
-        sample["mask"].squeeze()
-    )  # for visualization we have to remove 3rd dimension of mask
-    plt.show()
-
-    sample = test_dataset[0]
-    plt.subplot(1, 2, 1)
-    plt.imshow(
-        sample["image"].transpose(1, 2, 0)
-    )  # for visualization we have to transpose back to HWC
-    plt.subplot(1, 2, 2)
-    plt.imshow(
-        sample["mask"].squeeze()
-    )  # for visualization we have to remove 3rd dimension of mask
-    plt.show()
 
 
 class PetModel(pl.LightningModule):
@@ -72,7 +33,12 @@ class PetModel(pl.LightningModule):
         return mask
 
     def shared_step(self, batch, stage):
-        image = batch["image"]
+        image, mask = batch
+        # print("###################: batch:")
+        # print(f"image.shape: {image.shape} dtype: {image.dtype}")
+        # print(f"mask.shape: {mask.shape} dtype: {mask.dtype}")
+        # print("######################################################")
+        # image = batch["image"]
 
         # Shape of the image should be (batch_size, num_channels, height, width)
         # if you work with grayscale images, expand channels dim to have [batch_size, 1, height, width]
@@ -84,9 +50,10 @@ class PetModel(pl.LightningModule):
         # following shapes of features in encoder and decoder: 84, 42, 21, 10, 5 -> 5, 10, 20, 40, 80
         # and we will get an error trying to concat these features
         h, w = image.shape[2:]
+        # print(f"h: {h} w: {w}")
         assert h % 32 == 0 and w % 32 == 0
 
-        mask = batch["mask"]
+        # mask = batch["mask"]
 
         # Shape of the mask should be [batch_size, num_classes, height, width]
         # for binary segmentation num_classes = 1
@@ -171,43 +138,3 @@ class PetModel(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=0.0001)
-
-
-def main():
-    # download data
-    root = "."
-    # SimpleOxfordPetDataset.download(root)
-
-    # init train, val, test sets
-    train_dataset = SimpleOxfordPetDataset(root, "train")
-    valid_dataset = SimpleOxfordPetDataset(root, "valid")
-    test_dataset = SimpleOxfordPetDataset(root, "test")
-
-    # It is a good practice to check datasets don`t intersects with each other
-    assert set(test_dataset.filenames).isdisjoint(set(train_dataset.filenames))
-    assert set(test_dataset.filenames).isdisjoint(set(valid_dataset.filenames))
-    assert set(train_dataset.filenames).isdisjoint(set(valid_dataset.filenames))
-
-    print(f"Train size: {len(train_dataset)}")
-    print(f"Valid size: {len(valid_dataset)}")
-    print(f"Test size: {len(test_dataset)}")
-
-    n_cpu = os.cpu_count()
-    print(f"Number of CPUs: {n_cpu}")
-
-    train_dataloader = DataLoader(
-        train_dataset, batch_size=16, shuffle=True, num_workers=n_cpu
-    )
-    valid_dataloader = DataLoader(
-        valid_dataset, batch_size=16, shuffle=False, num_workers=n_cpu
-    )
-    test_dataloader = DataLoader(
-        test_dataset, batch_size=16, shuffle=False, num_workers=n_cpu
-    )
-
-    # show_samples(train_dataset, valid_dataset, test_dataset)
-
-
-# call main
-if "__main__" == __name__:
-    main()
