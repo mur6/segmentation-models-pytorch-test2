@@ -1,11 +1,13 @@
 [project]
-name = "segmentation-models-pytorch"
+name = "segmentation-models-pytorch-test"
 version = "0.1.0"
 description = "Add your description here"
 authors = [
     { name = "MURAKI Taichi", email = "muraki.taichi@gmail.com" }
 ]
-dependencies = []
+dependencies = [
+    "segmentation-models-pytorch>=0.3.3",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
