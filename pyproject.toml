@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "segmentation-models-pytorch>=0.3.3",
     "pytorch-lightning==1.5.4",
+    "matplotlib>=3.7.4",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
