@@ -7,6 +7,7 @@ import segmentation_models_pytorch as smp
 from pprint import pprint
 from torch.utils.data import DataLoader
 from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
+import os
 
 
 # lets look at some samples
@@ -53,10 +54,13 @@ def main():
     print(f"Test size: {len(test_dataset)}")
 
     n_cpu = os.cpu_count()
+    print(f"Number of CPUs: {n_cpu}")
+
     train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=n_cpu)
     valid_dataloader = DataLoader(valid_dataset, batch_size=16, shuffle=False, num_workers=n_cpu)
     test_dataloader = DataLoader(test_dataset, batch_size=16, shuffle=False, num_workers=n_cpu)
 
+    show_samples(train_dataset, valid_dataset, test_dataset)
 
 # call main
 if "__main__" == __name__:
