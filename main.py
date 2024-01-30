@@ -8,3 +8,6 @@ from pprint import pprint
 from torch.utils.data import DataLoader
 from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
 
+# download data
+root = "."
+SimpleOxfordPetDataset.download(root)
