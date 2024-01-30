@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 
 import torch
+import wandb
 import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 
@@ -49,6 +50,22 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
 
 
 def main():
+    learning_rate = 0.0001
+    architecture = "FPN"
+    encoder_name = "resnet34"
+    epochs = 5
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="segmentation_models_pytorch",
+        # track hyperparameters and run metadata
+        config={
+            "learning_rate": learning_rate,
+            "architecture": architecture,
+            "encoder_name": encoder_name,
+            "epochs": epochs,
+        },
+    )
+
     # from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
     base_path = Path("/Users/taichi.muraki/workspace/Python/ring-finger-semseg")
     train_dataset = ImageSegmentationDataset(
@@ -87,11 +104,11 @@ def main():
     # )
 
     # show_samples(train_dataset, valid_dataset, test_dataset)
-    model = PetModel("FPN", "resnet34", in_channels=3, out_classes=1)
+    model = PetModel(architecture, encoder_name, in_channels=3, out_classes=1)
 
     # Training
     trainer = pl.Trainer(
-        max_epochs=5,
+        max_epochs=epochs,
     )
 
     trainer.fit(
@@ -99,6 +116,7 @@ def main():
         train_dataloaders=train_dataloader,
         val_dataloaders=valid_dataloader,
     )
+    wandb.finish()
 
 
 # call main
