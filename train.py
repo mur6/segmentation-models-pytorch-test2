@@ -66,14 +66,14 @@ def main():
         },
     )
 
-    # from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
-    base_path = Path("/Users/taichi.muraki/workspace/Python/ring-finger-semseg")
+    # base_path = Path("/Users/taichi.muraki/workspace/Python/ring-finger-semseg/data/")
+    base_path = Path("../ring-finger-semseg/")
     train_dataset = ImageSegmentationDataset(
-        root_dir=base_path / "data/outputs/training/",
+        root_dir=base_path / "outputs/training/",
         transforms=None,
     )
     valid_dataset = ImageSegmentationDataset(
-        root_dir=base_path / "data/outputs/validation/",
+        root_dir=base_path / "outputs/validation/",
         transforms=None,
         train=False,
     )

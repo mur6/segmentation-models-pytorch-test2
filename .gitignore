@@ -13,3 +13,4 @@ wheels/
 annotations/
 images/
 lightning_logs/
+wandb/
