@@ -9,11 +9,17 @@ from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
 
 class PetModel(pl.LightningModule):
     def __init__(
-        self, arch, encoder_name, in_channels, out_classes, learning_rate, **kwargs
+        self,
+        architecture,
+        encoder_name,
+        in_channels,
+        out_classes,
+        learning_rate,
+        **kwargs,
     ):
         super().__init__()
         self.model = smp.create_model(
-            arch,
+            arch=architecture,
             encoder_name=encoder_name,
             in_channels=in_channels,
             classes=out_classes,
