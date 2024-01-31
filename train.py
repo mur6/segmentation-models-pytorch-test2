@@ -6,6 +6,7 @@ import wandb
 import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 from torch.utils.data import DataLoader
 from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
@@ -51,7 +52,7 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
 
 
 def main():
-    wandb_logger = WandbLogger()
+    wandb_logger = WandbLogger(log_model="all")
     learning_rate = 0.0001
     architecture = "FPN"
     encoder_name = "resnet34"
@@ -114,11 +115,10 @@ def main():
         learning_rate=learning_rate,
     )
 
+    checkpoint_callback = ModelCheckpoint(monitor="val_accuracy", mode="max")
     # Training
     trainer = pl.Trainer(
-        gpus=1,
-        max_epochs=epochs,
-        logger=wandb_logger,
+        gpus=1, max_epochs=epochs, logger=wandb_logger, callbacks=[checkpoint_callback]
     )
 
     trainer.fit(
