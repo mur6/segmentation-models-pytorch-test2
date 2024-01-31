@@ -140,7 +140,7 @@ def do_wandb_sweep():
         "method": "grid",
         "metric": {"goal": "maximize", "name": "valid_accuracy"},
         "parameters": {
-            # "learning_rate": {"max": 0.002, "min": 0.0001},
+            "learning_rate": {"values": [0.0001]},
             "architecture": {
                 "values": [
                     "Unet",
@@ -154,6 +154,7 @@ def do_wandb_sweep():
                     "PAN",
                 ]
             },
+            "encoder_name": {"values": ["resnet34", "resnet101"]},
             # "batch_size": {"values": [16, 32]},
         },
     }
