@@ -10,14 +10,14 @@ from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
 class PetModel(pl.LightningModule):
     def __init__(
         self,
-        architecture,
-        encoder_name,
+        config,
         in_channels,
         out_classes,
-        learning_rate,
         **kwargs,
     ):
         super().__init__()
+        architecture = config.architecture
+        encoder_name = config.encoder_name
         self.model = smp.create_model(
             arch=architecture,
             encoder_name=encoder_name,
@@ -25,7 +25,7 @@ class PetModel(pl.LightningModule):
             classes=out_classes,
             **kwargs,
         )
-        self.learning_rate = learning_rate
+        self.learning_rate = config.learning_rate
 
         # preprocessing parameteres for image
         params = smp.encoders.get_preprocessing_params(encoder_name)
