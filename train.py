@@ -106,7 +106,13 @@ def main():
     # )
 
     # show_samples(train_dataset, valid_dataset, test_dataset)
-    model = PetModel(architecture, encoder_name, in_channels=3, out_classes=1)
+    model = PetModel(
+        architecture,
+        encoder_name,
+        in_channels=3,
+        out_classes=1,
+        learning_rate=learning_rate,
+    )
 
     # Training
     trainer = pl.Trainer(

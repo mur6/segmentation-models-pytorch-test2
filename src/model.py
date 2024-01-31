@@ -8,7 +8,9 @@ from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
 
 
 class PetModel(pl.LightningModule):
-    def __init__(self, arch, encoder_name, in_channels, out_classes, **kwargs):
+    def __init__(
+        self, arch, encoder_name, in_channels, out_classes, learning_rate, **kwargs
+    ):
         super().__init__()
         self.model = smp.create_model(
             arch,
@@ -17,6 +19,7 @@ class PetModel(pl.LightningModule):
             classes=out_classes,
             **kwargs,
         )
+        self.learning_rate = learning_rate
 
         # preprocessing parameteres for image
         params = smp.encoders.get_preprocessing_params(encoder_name)
@@ -25,6 +28,8 @@ class PetModel(pl.LightningModule):
 
         # for image segmentation dice loss could be the best first choice
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
+        # LightningModule のハイパーパラメーターをログに記録する
+        self.save_hyperparameters()
 
     def forward(self, image):
         # normalize image here
