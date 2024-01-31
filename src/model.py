@@ -87,7 +87,20 @@ class PetModel(pl.LightningModule):
         tp, fp, fn, tn = smp.metrics.get_stats(
             pred_mask.long(), mask.long(), mode="binary"
         )
+        # then compute metrics with required reduction (see metric docs)
+        iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro")
+        f1_score = smp.metrics.f1_score(tp, fp, fn, tn, reduction="micro")
+        f2_score = smp.metrics.fbeta_score(tp, fp, fn, tn, beta=2, reduction="micro")
+        accuracy = smp.metrics.accuracy(tp, fp, fn, tn, reduction="macro")
+        recall = smp.metrics.recall(tp, fp, fn, tn, reduction="micro-imagewise")
 
+        # 損失とメトリックを記録
+        self.log(f"{stage}_loss", loss)
+        self.log(f"{stage}_iou_score", iou_score)
+        self.log(f"{stage}_f1_score", f1_score)
+        self.log(f"{stage}_f2_score", f2_score)
+        self.log(f"{stage}_accuracy", accuracy)
+        self.log(f"{stage}_recall", recall)
         return {
             "loss": loss,
             "tp": tp,
