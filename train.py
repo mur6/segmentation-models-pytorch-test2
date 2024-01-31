@@ -52,11 +52,19 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
 
 
 def main():
-    wandb_logger = WandbLogger(log_model="all")
+    wandb_logger = WandbLogger(project="segmentation_models_pytorch", log_model="all")
     learning_rate = 0.0001
     architecture = "FPN"
     encoder_name = "resnet34"
-    epochs = 5
+    epochs = 10
+    wandb_logger.experiment.config.update(
+        {
+            "learning_rate": learning_rate,
+            "architecture": architecture,
+            "encoder_name": encoder_name,
+            "epochs": epochs,
+        }
+    )
     # wandb.init(
     #     # set the wandb project where this run will be logged
     #     project="segmentation_models_pytorch",
