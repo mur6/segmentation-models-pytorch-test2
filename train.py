@@ -66,7 +66,7 @@ def train_main():
             "epochs": epochs,
         }
     )
-    # wandb.init(
+    wandb.init()
     #     # set the wandb project where this run will be logged
     #     project="segmentation_models_pytorch",
     #     # track hyperparameters and run metadata
@@ -135,7 +135,6 @@ def train_main():
         train_dataloaders=train_dataloader,
         val_dataloaders=valid_dataloader,
     )
-    # wandb.finish()
 
 
 def do_wandb_sweep():

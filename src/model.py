@@ -34,8 +34,10 @@ class PetModel(pl.LightningModule):
 
         # for image segmentation dice loss could be the best first choice
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
+        # https://github.com/wandb/wandb/issues/5003
+        # note: Lightning の save_hyperparameters() をコメントアウトする。
         # LightningModule のハイパーパラメーターをログに記録する
-        self.save_hyperparameters()
+        # self.save_hyperparameters()
 
     def forward(self, image):
         # normalize image here
