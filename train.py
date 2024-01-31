@@ -5,6 +5,7 @@ import torch
 import wandb
 import matplotlib.pyplot as plt
 import pytorch_lightning as pl
+from pytorch_lightning.loggers import WandbLogger
 
 from torch.utils.data import DataLoader
 from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
@@ -50,21 +51,22 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
 
 
 def main():
+    wandb_logger = WandbLogger()
     learning_rate = 0.0001
     architecture = "FPN"
     encoder_name = "resnet34"
     epochs = 5
-    wandb.init(
-        # set the wandb project where this run will be logged
-        project="segmentation_models_pytorch",
-        # track hyperparameters and run metadata
-        config={
-            "learning_rate": learning_rate,
-            "architecture": architecture,
-            "encoder_name": encoder_name,
-            "epochs": epochs,
-        },
-    )
+    # wandb.init(
+    #     # set the wandb project where this run will be logged
+    #     project="segmentation_models_pytorch",
+    #     # track hyperparameters and run metadata
+    #     config={
+    #         "learning_rate": learning_rate,
+    #         "architecture": architecture,
+    #         "encoder_name": encoder_name,
+    #         "epochs": epochs,
+    #     },
+    # )
 
     # base_path = Path("/Users/taichi.muraki/workspace/Python/ring-finger-semseg/data/")
     base_path = Path("../ring-finger-semseg/")
@@ -108,7 +110,9 @@ def main():
 
     # Training
     trainer = pl.Trainer(
+        gpus=1,
         max_epochs=epochs,
+        logger=wandb_logger,
     )
 
     trainer.fit(
@@ -116,7 +120,7 @@ def main():
         train_dataloaders=train_dataloader,
         val_dataloaders=valid_dataloader,
     )
-    wandb.finish()
+    # wandb.finish()
 
 
 # call main
