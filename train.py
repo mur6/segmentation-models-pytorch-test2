@@ -140,10 +140,10 @@ def train_main():
 
 def do_wandb_sweep():
     sweep_configuration = {
-        "method": "random",
+        "method": "grid",
         "metric": {"goal": "maximize", "name": "valid_accuracy"},
         "parameters": {
-            "learning_rate": {"max": 0.002, "min": 0.0001},
+            # "learning_rate": {"max": 0.002, "min": 0.0001},
             "architecture": {
                 "values": [
                     "Unet",
@@ -157,7 +157,7 @@ def do_wandb_sweep():
                     "PAN",
                 ]
             },
-            "batch_size": {"values": [16, 32]},
+            # "batch_size": {"values": [16, 32]},
         },
     }
     sweep_id = wandb.sweep(
