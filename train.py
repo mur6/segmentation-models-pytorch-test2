@@ -52,11 +52,11 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
 
 
 def train_main():
-    wandb.init(project="segmentation_models_pytorch")
+    wandb.init(project="segmentation_models_pytorch2")
     config = wandb.config
     wandb_logger = WandbLogger(log_model="all")
     epochs = 10
-    batch_size = 16
+    batch_size = config.batch_size
     # -----------------------------------
     # wandb_logger.experiment.config.update(
     #     {
@@ -155,13 +155,13 @@ def do_wandb_sweep():
                 ]
             },
             "encoder_name": {"values": ["resnet34", "resnet101"]},
-            # "batch_size": {"values": [16, 32]},
+            "batch_size": {"values": [16, 32]},
         },
     }
     sweep_id = wandb.sweep(
         sweep=sweep_configuration, project="segmentation_models_pytorch-sweep_search"
     )
-    wandb.agent(sweep_id, function=train_main, count=40)
+    wandb.agent(sweep_id, function=train_main, count=30)
 
 
 # call main
