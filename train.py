@@ -160,8 +160,10 @@ def do_wandb_sweep():
             "batch_size": {"values": [16, 32]},
         },
     }
-    sweep_id = wandb.sweep(sweep=sweep_configuration, project="my-first-sweep")
-    wandb.agent(sweep_id, function=train_main, count=10)
+    sweep_id = wandb.sweep(
+        sweep=sweep_configuration, project="segmentation_models_pytorch-sweep_search"
+    )
+    wandb.agent(sweep_id, function=train_main)
 
 
 # call main
