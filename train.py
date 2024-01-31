@@ -123,7 +123,7 @@ def main():
         learning_rate=learning_rate,
     )
 
-    checkpoint_callback = ModelCheckpoint(monitor="val_accuracy", mode="max")
+    checkpoint_callback = ModelCheckpoint(monitor="valid_accuracy", mode="max")
     # Training
     trainer = pl.Trainer(
         gpus=1, max_epochs=epochs, logger=wandb_logger, callbacks=[checkpoint_callback]
