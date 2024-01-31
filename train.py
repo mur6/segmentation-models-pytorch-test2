@@ -137,10 +137,10 @@ def train_main():
 
 def do_wandb_sweep():
     sweep_configuration = {
-        "method": "grid",
+        "method": "random",
         "metric": {"goal": "maximize", "name": "valid_accuracy"},
         "parameters": {
-            "learning_rate": {"values": [0.0001]},
+            "learning_rate": {"values": [0.001, 0.0001]},
             "architecture": {
                 "values": [
                     "Unet",
