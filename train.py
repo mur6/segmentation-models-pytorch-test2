@@ -140,7 +140,7 @@ def train_main():
 
 def do_wandb_sweep():
     sweep_configuration = {
-        "method": "grid",
+        "method": "random",
         "metric": {"goal": "maximize", "name": "valid_accuracy"},
         "parameters": {
             "learning_rate": {"max": 0.002, "min": 0.0001},
@@ -163,7 +163,7 @@ def do_wandb_sweep():
     sweep_id = wandb.sweep(
         sweep=sweep_configuration, project="segmentation_models_pytorch-sweep_search"
     )
-    wandb.agent(sweep_id, function=train_main)
+    wandb.agent(sweep_id, function=train_main, count=40)
 
 
 # call main
