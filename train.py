@@ -168,4 +168,4 @@ def do_wandb_sweep():
 
 # call main
 if "__main__" == __name__:
-    main()
+    do_wandb_sweep()
