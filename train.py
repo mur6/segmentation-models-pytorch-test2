@@ -143,7 +143,7 @@ def do_wandb_sweep():
         "method": "grid",
         "metric": {"goal": "maximize", "name": "valid_accuracy"},
         "parameters": {
-            "learning_rate": {"max": 0.005, "min": 0.0001},
+            "learning_rate": {"max": 0.002, "min": 0.0001},
             "architecture": {
                 "values": [
                     "Unet",
