@@ -55,9 +55,6 @@ def train_main():
     wandb.init(project="segmentation_models_pytorch")
     config = wandb.config
     wandb_logger = WandbLogger(log_model="all")
-    learning_rate = 0.0001
-    architecture = "FPN"
-    encoder_name = "resnet34"
     epochs = 10
     batch_size = 16
     # -----------------------------------
@@ -120,11 +117,9 @@ def train_main():
 
     # show_samples(train_dataset, valid_dataset, test_dataset)
     model = PetModel(
-        architecture,
-        encoder_name,
+        config,
         in_channels=3,
         out_classes=1,
-        learning_rate=learning_rate,
     )
 
     checkpoint_callback = ModelCheckpoint(monitor="valid_accuracy", mode="max")
