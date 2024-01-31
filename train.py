@@ -51,12 +51,13 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
     plt.show()
 
 
-def main():
+def train_main():
     wandb_logger = WandbLogger(project="segmentation_models_pytorch", log_model="all")
     learning_rate = 0.0001
     architecture = "FPN"
     encoder_name = "resnet34"
     epochs = 10
+    batch_size = 16
     wandb_logger.experiment.config.update(
         {
             "learning_rate": learning_rate,
@@ -105,13 +106,13 @@ def main():
     print(f"Number of CPUs: {n_cpu}")
 
     train_dataloader = DataLoader(
-        train_dataset, batch_size=16, shuffle=True, num_workers=n_cpu
+        train_dataset, batch_size=batch_size, shuffle=True, num_workers=n_cpu
     )
     valid_dataloader = DataLoader(
-        valid_dataset, batch_size=16, shuffle=False, num_workers=n_cpu
+        valid_dataset, batch_size=batch_size, shuffle=False, num_workers=n_cpu
     )
     # test_dataloader = DataLoader(
-    #     test_dataset, batch_size=16, shuffle=False, num_workers=n_cpu
+    #     test_dataset, batch_size=batch_size, shuffle=False, num_workers=n_cpu
     # )
 
     # show_samples(train_dataset, valid_dataset, test_dataset)
@@ -135,6 +136,32 @@ def main():
         val_dataloaders=valid_dataloader,
     )
     # wandb.finish()
+
+
+def do_wandb_sweep():
+    sweep_configuration = {
+        "method": "grid",
+        "metric": {"goal": "maximize", "name": "valid_accuracy"},
+        "parameters": {
+            "learning_rate": {"max": 0.005, "min": 0.0001},
+            "architecture": {
+                "values": [
+                    "Unet",
+                    "UnetPlusPlus",
+                    # MAnet,
+                    "Linknet",
+                    "FPN",
+                    "PSPNet",
+                    "DeepLabV3",
+                    "DeepLabV3Plus",
+                    "PAN",
+                ]
+            },
+            "batch_size": {"values": [16, 32]},
+        },
+    }
+    sweep_id = wandb.sweep(sweep=sweep_configuration, project="my-first-sweep")
+    wandb.agent(sweep_id, function=train_main, count=10)
 
 
 # call main
