@@ -52,7 +52,7 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
     plt.show()
 
 
-def train_main(project_name):
+def train_main():
     config_defaults = {
         "learning_rate": 0.0001,
         "architecture": "Unet",
@@ -61,7 +61,6 @@ def train_main(project_name):
     }
     with wandb.init(
         config=config_defaults,
-        project=project_name,
     ) as run:
         config = wandb.config
         wandb_logger = WandbLogger(log_model="all")
@@ -87,7 +86,7 @@ def train_main(project_name):
         #         "epochs": epochs,
         #     },
         # )
-
+        project_name = "sweep"
         if project_name == "local":
             base_path = Path(
                 "/Users/taichi.muraki/workspace/Python/ring-finger-semseg/data/"
