@@ -9,7 +9,6 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 
 from torch.utils.data import DataLoader
-from segmentation_models_pytorch.datasets import SimpleOxfordPetDataset
 
 from src.model import PetModel
 from src.dataset import ImageSegmentationDataset
