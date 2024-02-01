@@ -121,7 +121,8 @@ def train_main():
         in_channels=3,
         out_classes=1,
     )
-
+    # Log gradients, parameters and model topology
+    wandb_logger.watch(model, log="all")
     checkpoint_callback = ModelCheckpoint(monitor="valid_accuracy", mode="max")
     # Training
     trainer = pl.Trainer(
