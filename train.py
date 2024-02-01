@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import Callback
 
 from torch.utils.data import DataLoader
 
@@ -87,8 +88,12 @@ def train_main(project_name):
         #     },
         # )
 
-        # base_path = Path("/Users/taichi.muraki/workspace/Python/ring-finger-semseg/data/")
-        base_path = Path("../ring-finger-semseg/")
+        if project_name == "local":
+            base_path = Path(
+                "/Users/taichi.muraki/workspace/Python/ring-finger-semseg/data/"
+            )
+        else:
+            base_path = Path("../ring-finger-semseg/")
         train_dataset = ImageSegmentationDataset(
             root_dir=base_path / "outputs/training/",
             transforms=None,
@@ -133,12 +138,31 @@ def train_main(project_name):
         # Log gradients, parameters and model topology
         # wandb_logger.watch(model, log="all")
         checkpoint_callback = ModelCheckpoint(monitor="valid_accuracy", mode="max")
+
+        class LogPredictionSamplesCallback(Callback):
+            def on_validation_batch_end(
+                self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+            ):
+                # if batch_idx == 0 and self.wandb_logger:
+                if batch_idx == 0:
+                    images, masks = batch
+                    wandb_logger.log_image(
+                        key="images",
+                        images=[
+                            wandb.Image(images[0].cpu().numpy(), caption="input"),
+                            wandb.Image(masks[0].cpu().numpy() > 0, caption="target"),
+                            wandb.Image(outputs[0, 0].cpu().numpy(), caption="output"),
+                        ],
+                    )
+                    # predicted_mask = outputs
+                    # wandb_logger.log_image(images=images, caption=captions)
+
         # Training
         trainer = pl.Trainer(
             gpus=1,
             max_epochs=epochs,
             logger=wandb_logger,
-            callbacks=[checkpoint_callback],
+            callbacks=[checkpoint_callback, LogPredictionSamplesCallback()],
         )
 
         trainer.fit(
@@ -176,8 +200,8 @@ def do_wandb_sweep(project_name):
 
 
 def main(*, project_name):
-    do_wandb_sweep(project_name=project_name)
-    # train_main(project_name=project_name)
+    # do_wandb_sweep(project_name=project_name)
+    train_main(project_name=project_name)
 
 
 if "__main__" == __name__:
