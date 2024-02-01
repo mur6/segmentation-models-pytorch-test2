@@ -52,7 +52,12 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
 
 
 def train_main():
-    config_defaults = {"learning_rate": 0.0001, "batch_size": 16}
+    config_defaults = {
+        "learning_rate": 0.0001,
+        "architecture": "Unet",
+        "encoder_name": "resnet34",
+        "batch_size": 16,
+    }
     with wandb.init(
         config=config_defaults, project="segmentation_models_pytorch2"
     ) as run:
