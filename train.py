@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import argparse
 
 import torch
 import wandb
@@ -50,7 +51,7 @@ def show_samples(train_dataset, valid_dataset, test_dataset):
     plt.show()
 
 
-def train_main():
+def train_main(project_name):
     config_defaults = {
         "learning_rate": 0.0001,
         "architecture": "Unet",
@@ -58,7 +59,8 @@ def train_main():
         "batch_size": 16,
     }
     with wandb.init(
-        config=config_defaults, project="segmentation_models_pytorch2"
+        config=config_defaults,
+        project=project_name,
     ) as run:
         config = wandb.config
         wandb_logger = WandbLogger(log_model="all")
@@ -175,10 +177,14 @@ def do_wandb_sweep():
     wandb.agent(sweep_id, function=train_main, count=30)
 
 
-def main():
+def main(*, project_name):
     # do_wandb_sweep()
-    train_main()
+    train_main(project_name=project_name)
 
 
 if "__main__" == __name__:
-    main()
+    # get the project name from the command line
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--project_name", type=str, help="Wandb project name")
+    args = parser.parse_args()
+    main(project_name=args.project_name)
