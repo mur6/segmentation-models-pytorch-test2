@@ -148,7 +148,7 @@ def train_main(project_name):
         )
 
 
-def do_wandb_sweep():
+def do_wandb_sweep(project_name):
     sweep_configuration = {
         "method": "random",
         "metric": {"goal": "maximize", "name": "valid_accuracy"},
@@ -171,15 +171,13 @@ def do_wandb_sweep():
             "batch_size": {"values": [16, 32]},
         },
     }
-    sweep_id = wandb.sweep(
-        sweep=sweep_configuration, project="segmentation_models_pytorch-sweep_search"
-    )
+    sweep_id = wandb.sweep(sweep=sweep_configuration, project=project_name)
     wandb.agent(sweep_id, function=train_main, count=30)
 
 
 def main(*, project_name):
-    # do_wandb_sweep()
-    train_main(project_name=project_name)
+    do_wandb_sweep(project_name=project_name)
+    # train_main(project_name=project_name)
 
 
 if "__main__" == __name__:
