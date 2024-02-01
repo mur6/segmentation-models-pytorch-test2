@@ -146,12 +146,16 @@ def train_main(project_name):
                 # if batch_idx == 0 and self.wandb_logger:
                 if batch_idx == 0:
                     images, masks = batch
+                    preds = pl_module(images)
+                    img = images[0]
                     wandb_logger.log_image(
                         key="images",
                         images=[
-                            wandb.Image(images[0].cpu().numpy(), caption="input"),
+                            wandb.Image(
+                                img.permute(1, 2, 0).cpu().numpy(), caption="input"
+                            ),
                             wandb.Image(masks[0].cpu().numpy() > 0, caption="target"),
-                            wandb.Image(outputs[0, 0].cpu().numpy(), caption="output"),
+                            wandb.Image(preds[0].cpu().numpy() > 0, caption="preds"),
                         ],
                     )
                     # predicted_mask = outputs
