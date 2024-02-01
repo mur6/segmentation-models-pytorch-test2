@@ -158,8 +158,15 @@ def train_main(project_name):
                     # wandb_logger.log_image(images=images, caption=captions)
 
         # Training
+        # test if cuda is available
+        if torch.cuda.is_available():
+            print("Cuda is available")
+            gpus = 1
+        else:
+            print("Cuda is not available")
+            gpus = 0
         trainer = pl.Trainer(
-            gpus=1,
+            gpus=gpus,
             max_epochs=epochs,
             logger=wandb_logger,
             callbacks=[checkpoint_callback, LogPredictionSamplesCallback()],
