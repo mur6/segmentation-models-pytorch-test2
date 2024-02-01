@@ -202,7 +202,7 @@ def do_wandb_sweep(project_name):
                 ]
             },
             "encoder_name": {"values": ["resnet34", "resnet101"]},
-            "batch_size": {"values": [16, 32]},
+            "batch_size": {"values": [32]},
         },
     }
     sweep_id = wandb.sweep(sweep=sweep_configuration, project=project_name)
