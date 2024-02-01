@@ -211,8 +211,8 @@ def do_wandb_sweep(project_name):
 
 
 def main(*, project_name):
-    # do_wandb_sweep(project_name=project_name)
-    train_main(project_name=project_name)
+    do_wandb_sweep(project_name=project_name)
+    # train_main(project_name=project_name)
 
 
 if "__main__" == __name__:
